@@ -1,45 +1,47 @@
-module fulladder(A,B,C,S,Cout);
-input A,B,C;
-output Cout,S;
-assign S=A^B^C;
-assign Cout= B&C|(A&(B^C));
+module fulladder(a,b,cin,s,cout);
+input a,b,cin;
+output  s,cout;
+
+assign s=a^b^cin;
+assign cout= b&cin|(a&(b^cin));
 endmodule
 
-module four_bit_adder(a,b,cin,sum,cout);
-input [3:0]a,b;
-input cin;
-output cout;
-output [3:0]sum;
+module four_bit_adder(A,B,Cin,S,Cout);
+input [3:0]A,B;
+input Cin;
+output [3:0]S;
+output Cout;
 wire c1,c2,c3;
 
-fulladder aa(a[0],b[0],cin,sum[0],c1);
-fulladder bb(a[1],b[1],c1,sum[1],c2);
-fulladder cc(a[2],b[2],c2,sum[2],c3);
-fulladder dd(a[3],b[3],c3,sum[3],cout);
+fulladder aa(A[0],B[0],Cin,S[0],c1);
+fulladder bb(A[1],B[1],c1,S[1],c2);
+fulladder cc(A[2],B[2],c2,S[2],c3);
+fulladder dd(A[3],B[3],c3,S[3],Cout);
 
 endmodule
-
-
 
 
 
 module tb();
 reg [3:0]x,y;
-reg zin;
-wire [3:0]sum;
+reg Zin;
+wire [3:0]Sum;
 wire carry;
 
-four_bit_adder add(x,y,zin,sum,carry);
+ four_bit_adder add(x,y,Zin,Sum,carry);
 
 initial begin
-    $monitor("@ %t the a=%b,b=%b,cin=%b the output is cout=%b,s=%b",$time,x,y,zin,carry,sum);
-    x=4'b0010;y=4'b1010;zin=1'b0;
-    #10 x=4'b0010;y=4'b1010;zin=1'b1;
-    #10 x=4'b1111;y=4'b1111;zin=1'b0;
-    #10 x=4'b1111;y=4'b1111;zin=1'b1;
+  $monitor("@ %0t the input is a=%b b=%b cin=%b and the output carry=%b sum=%b",$time,x,y,Zin,carry,Sum);
+
+    x=4'b1110;y=4'b0010;Zin=1'b0;
+    #10 x=4'b1110;y=4'b0010;Zin=1'b1;
+    #10 x=4'b1111;y=4'b1111;Zin=1'b0;
+    #10 x=4'b1111;y=4'b1111;Zin=1'b1;
     #10 $finish;
+
 end
-initial begin
+
+initial begin 
     $dumpfile("four_bit_adder.vcd");
     $dumpvars(0,tb);
 end
